@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="src/TechChallengeFase1.Domain/TechChallengeFase1.Domain.csproj" />
+  <Project Path="src/TechChallengeFase1.Application/TechChallengeFase1.Application.csproj" />
+  <Project Path="src/TechChallengeFase1.Infrastructure/TechChallengeFase1.Infrastructure.csproj" />
+  <Project Path="src/TechChallengeFase1.Api/TechChallengeFase1.Api.csproj" />
+  <Project Path="src/TechChallengeFase1.Tests/TechChallengeFase1.Tests.csproj" />
+</Solution>
