@@ -1,41 +1,65 @@
+using Microsoft.AspNetCore.Mvc;
+using Serilog;
+using System.Net;
+using TechChallengeFase1.Api.Middlewares;
+using TechChallengeFase1.Application.DTOs.Shared;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddControllers()
+.ConfigureApiBehaviorOptions(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var listaErros = context.ModelState
+            .Where(e => e.Value?.Errors.Count > 0)
+            .Select(e => new
+            {
+                Campo = e.Key,
+                Mensagem = e.Value!.Errors.First().ErrorMessage
+            })
+            .ToList<dynamic>();
+
+        var erro = new ExceptionOutputDto
+        {
+            CodigoStatus = HttpStatusCode.BadRequest,
+            Mensagem = "Erro de validação nos campos enviados.",
+            ListaErros = listaErros
+        };
+
+        return new ObjectResult(erro)
+        {
+            StatusCode = StatusCodes.Status400BadRequest
+        };
+    };
+});
+
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddHttpContextAccessor();
+//builder.Services.AddApplicationServices();
+//builder.Services.AddInfrastructureServices(builder.Configuration);
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .Enrich.FromLogContext()
+    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Scope} {Message:lj}{NewLine}{Exception}")
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(Log.Logger, dispose: true);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionMiddleware>();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+app.MapControllers();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

@@ -9,8 +9,6 @@
     <Folder Include="Middlewares\" />
     <Folder Include="Services\" />
     <Folder Include="Options\" />
-    <Folder Include="Extensions\" />
-    <Folder Include="DTOs\" />
   </ItemGroup>
 
 	<ItemGroup>
