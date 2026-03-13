@@ -6,10 +6,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Configurations\" />
     <Folder Include="Transactions\" />
     <Folder Include="Services\" />
     <Folder Include="Repositories\" />
-    <Folder Include="Data\" />
   </ItemGroup>
 
 	<ItemGroup>
