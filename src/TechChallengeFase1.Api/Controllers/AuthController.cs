@@ -8,7 +8,7 @@ namespace TechChallengeFase1.Api.Controllers
     {
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login()
+        public async Task<IActionResult> Login()
         {
             return Ok("login não implementado");
         }

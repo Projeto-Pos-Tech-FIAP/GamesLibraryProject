@@ -1,10 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using System.Net;
+using TechChallengeFase1.Api.Configurations;
 using TechChallengeFase1.Api.Middlewares;
-using TechChallengeFase1.Application.DTOs.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .Enrich.FromLogContext()
+    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Scope} {Message:lj}{NewLine}{Exception}")
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(Log.Logger, dispose: true);
 
 builder.Services.AddControllers()
 .ConfigureApiBehaviorOptions(options =>
@@ -20,45 +28,60 @@ builder.Services.AddControllers()
             })
             .ToList<dynamic>();
 
-        var erro = new ExceptionOutputDto
+        return new ObjectResult(new
         {
-            CodigoStatus = HttpStatusCode.BadRequest,
+            CodigoStatus = 400,
             Mensagem = "Erro de validação nos campos enviados.",
             ListaErros = listaErros
-        };
-
-        return new ObjectResult(erro)
+        })
         {
             StatusCode = StatusCodes.Status400BadRequest
         };
     };
 });
 
-
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new() { Title = "TechChallenge API", Version = "v1" });
 
-builder.Services.AddHttpContextAccessor();
-//builder.Services.AddApplicationServices();
-//builder.Services.AddInfrastructureServices(builder.Configuration);
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header usando Bearer. Ex: 'Bearer {token}'",
+        Name = "Authorization",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .Enrich.FromLogContext()
-    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Scope} {Message:lj}{NewLine}{Exception}")
-    .CreateLogger();
-
-builder.Logging.ClearProviders();
-builder.Logging.AddSerilog(Log.Logger, dispose: true);
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 var app = builder.Build();
+
+
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseAuthentication(); 
+app.UseAuthorization();
 
 app.MapControllers();
 
