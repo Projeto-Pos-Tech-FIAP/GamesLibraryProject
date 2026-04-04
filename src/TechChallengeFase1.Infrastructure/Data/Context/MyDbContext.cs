@@ -3,12 +3,22 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using TechChallengeFase1.Domain.Entities;
 using TechChallengeFase1.Domain.Interfaces;
 
 namespace TechChallengeFase1.Infrastructure.Data.Context;
 
 public sealed class MyDbContext : DbContext
 {
+    public DbSet<Game> Games { get; set; }
+    public DbSet<GameGenre> GemeGenres { get; set; }
+    public DbSet<Genre> Genres { get; set; }
+    public DbSet<Library> Libraries { get; set; }
+    public DbSet<LibraryGame> LibraryGames { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItens { get; set; }
+    public DbSet<OrderStatus> OrderStatuses { get; set; }
+
     public void SetConnectionString(string connectionString)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
