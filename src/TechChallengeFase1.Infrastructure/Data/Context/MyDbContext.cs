@@ -1,23 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
-using System.Text;
+using TechChallengeFase1.Application.Interfaces;
 using TechChallengeFase1.Domain.Entities;
 using TechChallengeFase1.Domain.Interfaces;
+using TechChallengeFase1.Infrastructure.Data.Audit;
 
 namespace TechChallengeFase1.Infrastructure.Data.Context;
 
 public sealed class MyDbContext : DbContext
 {
+    private readonly IAuditService? _auditService;
+
     public DbSet<Game> Games { get; set; }
-    public DbSet<GameGenre> GemeGenres { get; set; }
+    public DbSet<GameGenre> GameGenres { get; set; }
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Library> Libraries { get; set; }
     public DbSet<LibraryGame> LibraryGames { get; set; }
     public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderItem> OrderItens { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<OrderStatus> OrderStatuses { get; set; }
+
+    public MyDbContext(DbContextOptions<MyDbContext> options, IAuditService? auditService = null)
+        : base(options)
+    {
+        _auditService = auditService;
+    }
 
     public void SetConnectionString(string connectionString)
     {
@@ -31,6 +38,21 @@ public sealed class MyDbContext : DbContext
 
         Database.SetConnectionString(connectionString);
         ChangeTracker.Clear();
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var auditEntries = CaptureAuditEntries();
+
+        var result = await base.SaveChangesAsync(cancellationToken);
+
+        if (_auditService != null && auditEntries.Count > 0)
+        {
+            var logs = auditEntries.Select(e => e.ToAuditLog());
+            await _auditService.SaveAuditLogsAsync(logs, cancellationToken);
+        }
+
+        return result;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,7 +69,7 @@ public sealed class MyDbContext : DbContext
                     .GetMethod(nameof(ConfigureSoftDeleteFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
                     ?.MakeGenericMethod(entityType.ClrType);
 
-                method?.Invoke(null, new object[] { modelBuilder });
+                method?.Invoke(null, [modelBuilder]);
             }
         }
     }
@@ -55,5 +77,25 @@ public sealed class MyDbContext : DbContext
     private static void ConfigureSoftDeleteFilter<T>(ModelBuilder modelBuilder) where T : class, ISoftDelete
     {
         modelBuilder.Entity<T>().HasQueryFilter(e => !e.IsDeleted);
+    }
+
+    private List<AuditEntryCapture> CaptureAuditEntries()
+    {
+        if (_auditService is null)
+            return [];
+
+        ChangeTracker.DetectChanges();
+
+        var entries = new List<AuditEntryCapture>();
+
+        foreach (var entry in ChangeTracker.Entries())
+        {
+            if (entry.State is EntityState.Detached or EntityState.Unchanged)
+                continue;
+
+            entries.Add(new AuditEntryCapture(entry));
+        }
+
+        return entries;
     }
 }
