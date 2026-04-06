@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TechChallengeFase1.Application.Interfaces;
+using TechChallengeFase1.Domain.Interfaces;
 using TechChallengeFase1.Infrastructure.Data.Context;
+using TechChallengeFase1.Infrastructure.Data.Repositories;
 using TechChallengeFase1.Infrastructure.Data.Services;
 using TechChallengeFase1.Infrastructure.Options;
 
@@ -18,6 +20,7 @@ public static class InfrastructureServiceExtensions
             configuration.GetSection(MongoDbSettings.SectionName));
 
         services.AddScoped<IAuditService, MongoAuditService>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
 
         services.AddDbContext<MyDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));

@@ -1,3 +1,4 @@
+using TechChallengeFase1.Application.DTOs;
 using TechChallengeFase1.Domain.DTOs;
 using TechChallengeFase1.Domain.Entities;
 
@@ -39,5 +40,19 @@ public class GameBuilder
         BasePrice = _basePrice,
         CreatedBy = _createdBy,
         IsActive = true
+    };
+
+    public GameOutputDto BuildOutputDto() => new GameOutputDto
+    {
+        GameId = _gameId,
+        Title = _title,
+        Description = _description,
+        DeveloperId = _developerId,
+        PublisherId = _publisherId,
+        ReleaseDate = _releaseDate,
+        BasePrice = _basePrice,
+        IsActive = true,
+        CreatedAt = DateTime.UtcNow,
+        CreatedBy = _createdBy
     };
 }

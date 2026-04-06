@@ -3,6 +3,8 @@ using Serilog;
 using System.Net;
 using TechChallengeFase1.Api.Middlewares;
 using TechChallengeFase1.Application.DTOs.Shared;
+using TechChallengeFase1.Application.Extensions;
+using TechChallengeFase1.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,8 +40,8 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddHttpContextAccessor();
-//builder.Services.AddApplicationServices();
-//builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()

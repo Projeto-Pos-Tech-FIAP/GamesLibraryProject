@@ -1,4 +1,5 @@
 using Moq;
+using AutoMapper;
 using TechChallengeFase1.Application.Services;
 using TechChallengeFase1.Domain.Interfaces;
 using TechChallengeFase1.Tests.Builders;
@@ -13,7 +14,11 @@ public class CreateGameTests
     public CreateGameTests()
     {
         _gameRepositoryMock = new Mock<IGameRepository>();
-        _sut = new GameService(_gameRepositoryMock.Object);
+
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<TechChallengeFase1.Application.Mappings.MappingProfile>());
+        var mapper = config.CreateMapper();
+
+        _sut = new GameService(_gameRepositoryMock.Object, mapper);
     }
 
     [Fact]

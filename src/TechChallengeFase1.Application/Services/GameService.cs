@@ -1,3 +1,5 @@
+using AutoMapper;
+using TechChallengeFase1.Application.DTOs;
 using TechChallengeFase1.Application.Interfaces;
 using TechChallengeFase1.Domain.DTOs;
 using TechChallengeFase1.Domain.Entities;
@@ -8,13 +10,15 @@ namespace TechChallengeFase1.Application.Services;
 public class GameService : IGameService
 {
     private readonly IGameRepository _gameRepository;
+    private readonly IMapper _mapper;
 
-    public GameService(IGameRepository gameRepository)
+    public GameService(IGameRepository gameRepository, IMapper mapper)
     {
         _gameRepository = gameRepository;
+        _mapper = mapper;
     }
 
-    public async Task<Game> CreateAsync(GameInputDto dto)
+    public async Task<GameOutputDto> CreateAsync(GameInputDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Title))
             throw new ArgumentException("O título do jogo é obrigatório.", nameof(dto.Title));
@@ -32,6 +36,7 @@ public class GameService : IGameService
             dto.Description,
             dto.IsActive);
 
-        return await _gameRepository.AddAsync(game);
+        var savedGame = await _gameRepository.AddAsync(game);
+        return _mapper.Map<GameOutputDto>(savedGame);
     }
 }

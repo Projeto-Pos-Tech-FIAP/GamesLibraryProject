@@ -19,6 +19,7 @@ public sealed class MyDbContext : DbContext
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<OrderStatus> OrderStatuses { get; set; }
+    public DbSet<Currency> Currencies { get; set; }
 
     public MyDbContext(DbContextOptions<MyDbContext> options, IAuditService? auditService = null)
         : base(options)

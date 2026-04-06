@@ -24,7 +24,7 @@ public class GameControllerTests
     {
         // Arrange
         var dto = new GameBuilder().BuildDto();
-        var createdGame = new GameBuilder().WithGameId(1).Build();
+        var createdGame = new GameBuilder().WithGameId(1).BuildOutputDto();
 
         _gameServiceMock
             .Setup(s => s.CreateAsync(It.IsAny<GameInputDto>()))
@@ -43,7 +43,7 @@ public class GameControllerTests
     {
         // Arrange
         var dto = new GameBuilder().WithTitle("Hollow Knight").WithBasePrice(39.99m).BuildDto();
-        var createdGame = new GameBuilder().WithGameId(7).WithTitle("Hollow Knight").WithBasePrice(39.99m).Build();
+        var createdGame = new GameBuilder().WithGameId(7).WithTitle("Hollow Knight").WithBasePrice(39.99m).BuildOutputDto();
 
         _gameServiceMock
             .Setup(s => s.CreateAsync(It.IsAny<GameInputDto>()))
@@ -66,7 +66,7 @@ public class GameControllerTests
     {
         // Arrange
         var dto = new GameBuilder().BuildDto();
-        var createdGame = new GameBuilder().WithGameId(42).Build();
+        var createdGame = new GameBuilder().WithGameId(42).BuildOutputDto();
 
         _gameServiceMock
             .Setup(s => s.CreateAsync(It.IsAny<GameInputDto>()))
@@ -85,7 +85,7 @@ public class GameControllerTests
     {
         // Arrange
         var dto = new GameBuilder().BuildDto();
-        var createdGame = new GameBuilder().Build();
+        var createdGame = new GameBuilder().BuildOutputDto();
 
         _gameServiceMock
             .Setup(s => s.CreateAsync(It.IsAny<GameInputDto>()))
@@ -114,7 +114,7 @@ public class GameControllerTests
             .WithTitle("Hades")
             .WithBasePrice(24.99m)
             .WithCreatedBy(createdBy)
-            .Build();
+            .BuildOutputDto();
 
         _gameServiceMock
             .Setup(s => s.CreateAsync(It.IsAny<GameInputDto>()))

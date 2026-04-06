@@ -25,21 +25,7 @@ public class GameController : ControllerBase
     [ProducesResponseType(typeof(ExceptionOutputDto), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<GameOutputDto>> CreateAsync([FromBody] GameInputDto dto)
     {
-        var game = await _gameService.CreateAsync(dto);
-
-        var output = new GameOutputDto
-        {
-            GameId = game.GameId,
-            Title = game.Title,
-            Description = game.Description,
-            DeveloperId = game.DeveloperId,
-            PublisherId = game.PublisherId,
-            ReleaseDate = game.ReleaseDate,
-            BasePrice = game.BasePrice,
-            IsActive = game.IsActive,
-            CreatedAt = game.CreatedAt,
-            CreatedBy = game.CreatedBy
-        };
+        var output = await _gameService.CreateAsync(dto);
 
         return CreatedAtAction(nameof(CreateAsync), new { id = output.GameId }, output);
     }
