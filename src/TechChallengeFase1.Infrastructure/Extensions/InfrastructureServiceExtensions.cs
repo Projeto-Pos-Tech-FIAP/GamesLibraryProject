@@ -25,6 +25,20 @@ public static class InfrastructureServiceExtensions
         services.AddDbContext<MyDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
+        var redisConnectionString = configuration.GetConnectionString("Redis");
+
+        if (!string.IsNullOrWhiteSpace(redisConnectionString))
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnectionString;
+            });
+        }
+        else
+        {
+            services.AddDistributedMemoryCache();
+        }
+
         return services;
     }
 }

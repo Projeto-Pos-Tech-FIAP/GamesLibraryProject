@@ -38,7 +38,6 @@ builder.Services.AddControllers()
 
 
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
