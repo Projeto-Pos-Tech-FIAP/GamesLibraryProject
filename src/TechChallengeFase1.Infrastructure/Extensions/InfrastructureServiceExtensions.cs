@@ -22,6 +22,11 @@ public static class InfrastructureServiceExtensions
         services.AddScoped<IAuditService, MongoAuditService>();
         services.AddScoped<IOrderRepository, OrderRepository>();
 
+        // Domain repositories
+        services.AddScoped<IGameRepository, GameRepository>();
+        services.AddScoped<ILibraryRepository, LibraryRepository>();
+        services.AddScoped<ILibraryGameRepository, LibraryGameRepository>();
+
         services.AddDbContext<MyDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 

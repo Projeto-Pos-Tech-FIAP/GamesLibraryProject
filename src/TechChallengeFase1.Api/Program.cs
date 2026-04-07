@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Net;
 using TechChallengeFase1.Api.Middlewares;
 using TechChallengeFase1.Application.DTOs.Shared;
 using TechChallengeFase1.Application.Extensions;
+using TechChallengeFase1.Infrastructure.Data.Context;
 using TechChallengeFase1.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
