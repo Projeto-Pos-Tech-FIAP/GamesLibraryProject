@@ -1,3 +1,5 @@
+using TechChallengeFase1.Domain.Entities;
+
 namespace TechChallengeFase1.Application.DTOs;
 
 public class GameOutputDto
@@ -12,4 +14,6 @@ public class GameOutputDto
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid CreatedBy { get; set; }
+
+    public GameGenre Genre { get; set; } = null!;
 }

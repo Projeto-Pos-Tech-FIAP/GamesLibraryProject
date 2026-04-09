@@ -25,7 +25,6 @@ public class GameRepository : IGameRepository
     {
         return await _context.Games
             .Include(g => g.GameGenres)
-            .Include(g => g.LibraryGames)
             .FirstOrDefaultAsync(g => g.GameId == gameId);
     }
 
@@ -33,7 +32,6 @@ public class GameRepository : IGameRepository
     {
         return await _context.Games
             .Include(g => g.GameGenres)
-            .Include(g => g.LibraryGames)
             .AsNoTracking()
             .ToListAsync();
     }
