@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Net;
+using TechChallengeFase1.Api.GraphQL.Queries;
+using TechChallengeFase1.Api.GraphQL.Types;
 using TechChallengeFase1.Api.Middlewares;
 using TechChallengeFase1.Application.DTOs.Shared;
 using TechChallengeFase1.Application.Extensions;
-using TechChallengeFase1.Infrastructure.Data.Context;
 using TechChallengeFase1.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +44,15 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
+builder.Services
+    .AddGraphQLServer()
+    .AddQueryType(d => d.Name("Query"))
+        .AddTypeExtension<GameQueries>()
+    .AddType<GameType>()
+    .AddFiltering()
+    .AddSorting()
+    .AddProjections();
+
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .Enrich.FromLogContext()
@@ -57,6 +66,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.MapGraphQL("/graphql");
 
 app.UseSwagger();
 app.UseSwaggerUI();

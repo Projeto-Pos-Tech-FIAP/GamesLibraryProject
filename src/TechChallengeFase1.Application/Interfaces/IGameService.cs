@@ -6,4 +6,6 @@ namespace TechChallengeFase1.Application.Interfaces;
 public interface IGameService
 {
     Task<GameOutputDto> CreateAsync(GameInputDto dto);
+    Task<GameOutputDto?> GetGameByIdAsync(int gameId);
+    Task<List<GameOutputDto>> GetAllAsync();
 }

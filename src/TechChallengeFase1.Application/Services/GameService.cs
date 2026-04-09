@@ -39,4 +39,18 @@ public class GameService : IGameService
         var savedGame = await _gameRepository.AddAsync(game);
         return _mapper.Map<GameOutputDto>(savedGame);
     }
+
+    public async Task<GameOutputDto> GetGameByIdAsync(int id)
+    {
+        var game = await _gameRepository.GetByIdAsync(id);
+        if (game == null)
+            throw new KeyNotFoundException($"Jogo com ID {id} não encontrado.");
+        return _mapper.Map<GameOutputDto>(game);
+    }
+
+    public async Task<List<GameOutputDto>> GetAllAsync()
+    {
+        var games = await _gameRepository.GetAllAsync();
+        return _mapper.Map<List<GameOutputDto>>(games);
+    }
 }

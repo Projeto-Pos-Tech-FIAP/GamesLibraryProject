@@ -28,4 +28,13 @@ public class GameRepository : IGameRepository
             .Include(g => g.LibraryGames)
             .FirstOrDefaultAsync(g => g.GameId == gameId);
     }
+
+    public async Task<List<Game>> GetAllAsync()
+    {
+        return await _context.Games
+            .Include(g => g.GameGenres)
+            .Include(g => g.LibraryGames)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 }
