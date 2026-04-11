@@ -1,7 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System.Net;
+using TechChallengeFase1.Api.GraphQL.Queries;
+using TechChallengeFase1.Api.GraphQL.Types;
 using TechChallengeFase1.Api.Configurations;
 using TechChallengeFase1.Api.Middlewares;
+using TechChallengeFase1.Application.DTOs.Shared;
+using TechChallengeFase1.Application.Extensions;
+using TechChallengeFase1.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,10 +47,21 @@ builder.Services.AddControllers()
 });
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new() { Title = "TechChallenge API", Version = "v1" });
 
+builder.Services
+    .AddGraphQLServer()
+    .AddQueryType(d => d.Name("Query"))
+        .AddTypeExtension<GameQueries>()
+    .AddType<GameType>()
+    .AddFiltering()
+    .AddSorting()
+    .AddProjections();
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Description = "JWT Authorization header usando Bearer. Ex: 'Bearer {token}'",
@@ -74,6 +91,8 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 
+
+app.MapGraphQL("/graphql");
 
 app.UseSwagger();
 app.UseSwaggerUI();

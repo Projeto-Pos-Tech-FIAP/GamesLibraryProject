@@ -12,11 +12,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="GraphQL" Version="8.8.4" />
+    <PackageReference Include="HotChocolate" Version="15.1.13" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.13" />
+    <PackageReference Include="HotChocolate.Data" Version="15.1.13" />
+    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="15.1.13" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Serilog" Version="4.3.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
@@ -25,6 +32,12 @@
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="GraphQL\Mutations\" />
+    <Folder Include="GraphQL\Inputs\" />
+    <Folder Include="GraphQL\Payloads\" />
   </ItemGroup>
 
 </Project>
