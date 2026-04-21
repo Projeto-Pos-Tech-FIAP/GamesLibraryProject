@@ -11,7 +11,7 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IGameService, GameService>();
         services.AddScoped<ILibraryService, LibraryService>();
         services.AddScoped<IOrderService, OrderService>();
-        
+        services.AddScoped<IUsersServices, UsersService>();
         services.AddAutoMapper(typeof(ApplicationServiceExtensions).Assembly);
 
         return services;

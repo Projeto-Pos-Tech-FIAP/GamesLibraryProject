@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TechChallengeFase1.Application.Extensions;
 using TechChallengeFase1.Application.Interfaces;
 using TechChallengeFase1.Domain.Interfaces;
 using TechChallengeFase1.Infrastructure.Data.Context;
 using TechChallengeFase1.Infrastructure.Data.Repositories;
 using TechChallengeFase1.Infrastructure.Data.Services;
+using TechChallengeFase1.Infrastructure.Identity.Mappers;
 using TechChallengeFase1.Infrastructure.Options;
 
 namespace TechChallengeFase1.Infrastructure.Extensions;
@@ -29,7 +31,10 @@ public static class InfrastructureServiceExtensions
 
         services.AddDbContext<MyDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
+        services.AddAutoMapper(
+                         typeof(ApplicationServiceExtensions).Assembly,
+                         typeof(KeycloakProfile).Assembly
+        );
         var redisConnectionString = configuration.GetConnectionString("Redis");
 
         if (!string.IsNullOrWhiteSpace(redisConnectionString))
@@ -43,7 +48,7 @@ public static class InfrastructureServiceExtensions
         {
             services.AddDistributedMemoryCache();
         }
-
+        services.AddKeycloak(configuration);
         return services;
     }
 }

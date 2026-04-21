@@ -5,9 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
     <Folder Include="Middlewares\" />
-    <Folder Include="Services\" />
     <Folder Include="Options\" />
   </ItemGroup>
 

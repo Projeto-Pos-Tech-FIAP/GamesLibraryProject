@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text.Json;
@@ -25,19 +24,20 @@ public static class AuthConfig
                     ValidateIssuer = true,
                     ValidIssuer = authority,
 
-                    ValidateAudience = true,
+                    ValidateAudience = false,
                     ValidAudience = audience,
 
                     ValidateLifetime = true
                 };
 
-               
+
                 options.Events = new JwtBearerEvents
                 {
                     OnTokenValidated = context =>
                     {
                         var identity = context.Principal?.Identity as ClaimsIdentity;
 
+                       
                         var realmAccess = context.Principal?.FindFirst("realm_access")?.Value;
 
                         if (!string.IsNullOrEmpty(realmAccess))
@@ -50,12 +50,30 @@ public static class AuthConfig
                             foreach (var role in roles)
                             {
                                 if (!string.IsNullOrEmpty(role))
-                                {
                                     identity?.AddClaim(new Claim(ClaimTypes.Role, role));
-                                }
                             }
                         }
 
+                       
+                        var resourceAccess = context.Principal?.FindFirst("resource_access")?.Value;
+
+                        if (!string.IsNullOrEmpty(resourceAccess))
+                        {
+                            var json = JsonSerializer.Deserialize<JsonElement>(resourceAccess);
+
+                            if (json.TryGetProperty("tech-challenge", out var client))
+                            {
+                                var roles = client.GetProperty("roles")
+                                    .EnumerateArray()
+                                    .Select(r => r.GetString());
+
+                                foreach (var role in roles)
+                                {
+                                    if (!string.IsNullOrEmpty(role))
+                                        identity?.AddClaim(new Claim(ClaimTypes.Role, role));
+                                }
+                            }
+                        }
                         return Task.CompletedTask;
                     }
                 };

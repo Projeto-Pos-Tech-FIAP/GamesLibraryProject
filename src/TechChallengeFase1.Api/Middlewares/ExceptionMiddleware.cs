@@ -44,6 +44,8 @@ public class ExceptionMiddleware
     {
         return ex switch
         {
+            ExternalServiceException external => (HttpStatusCode.BadGateway, CreateExceptionDto(ex, HttpStatusCode.BadGateway)),
+            UnauthorizedException unauthorized => (HttpStatusCode.Unauthorized, CreateExceptionDto(unauthorized, HttpStatusCode.Unauthorized)),
             NotFoundException notFound => (HttpStatusCode.NotFound, CreateExceptionDto(notFound, HttpStatusCode.NotFound)),
             OperationCanceledException canceled => (HttpStatusCode.BadRequest, CreateExceptionDto(canceled, HttpStatusCode.BadRequest)),
             ArgumentException argument => (HttpStatusCode.BadRequest, CreateExceptionDto(argument, HttpStatusCode.BadRequest)),

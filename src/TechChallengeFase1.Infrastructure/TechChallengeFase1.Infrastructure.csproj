@@ -1,15 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <Compile Remove="Repositories\**" />
+    <Compile Remove="Transactions\**" />
+    <EmbeddedResource Remove="Repositories\**" />
+    <EmbeddedResource Remove="Transactions\**" />
+    <None Remove="Repositories\**" />
+    <None Remove="Transactions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TechChallengeFase1.Application\TechChallengeFase1.Application.csproj" />
     <ProjectReference Include="..\TechChallengeFase1.Domain\TechChallengeFase1.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Data\Configurations\" />
-    <Folder Include="Transactions\" />
-    <Folder Include="Services\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
   <ItemGroup>
