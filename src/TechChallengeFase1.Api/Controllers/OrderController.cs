@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TechChallengeFase1.Application.DTOs;
 using TechChallengeFase1.Application.Interfaces;
@@ -6,6 +7,7 @@ using TechChallengeFase1.Domain.Enums;
 
 namespace TechChallengeFase1.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class OrderController : ControllerBase
@@ -21,6 +23,7 @@ public class OrderController : ControllerBase
     /// Cria uma nova ordem (venda).
     /// </summary>
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(OrderOutputDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<OrderOutputDto>> CreateAsync([FromBody] OrderInputDto dto)
     {
@@ -32,6 +35,7 @@ public class OrderController : ControllerBase
     /// Altera o status de uma ordem.
     /// </summary>
     [HttpPatch("{id:int}/status-change")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(OrderOutputDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<OrderOutputDto>> ChangeStatusAsync(int id, [FromBody] OrderStatusEnum newStatus)
     {

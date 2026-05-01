@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TechChallengeFase1.Application.DTOs;
 using TechChallengeFase1.Application.DTOs.Shared;
@@ -6,6 +7,7 @@ using TechChallengeFase1.Domain.DTOs;
 
 namespace TechChallengeFase1.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class GameController : ControllerBase
@@ -21,6 +23,7 @@ public class GameController : ControllerBase
     /// Adiciona um novo jogo ao sistema.
     /// </summary>
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(GameOutputDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ExceptionOutputDto), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<GameOutputDto>> CreateAsync([FromBody] GameInputDto dto)
