@@ -31,7 +31,25 @@ public class LibraryController : ControllerBase
     if (library == null)
       return NotFound(new { Message = $"Biblioteca do usuário {userGuid} não encontrada." });
 
-    return Ok(library);
+
+    var result = new
+    {
+      library.LibraryId,
+      library.UserGuid,
+      library.IsActive,
+      library.CreatedAt,
+      Games = library.LibraryGames.Select(lg => new
+      {
+        lg.LibraryGameId,
+        lg.GameId,
+        lg.AcquiredAt,
+        lg.AcquiredFromOrderId,
+        GameTitle = lg.Game?.Title,
+        GamePrice = lg.Game?.BasePrice
+      })
+    };
+
+    return Ok(result);
   }
 
   /// <summary>
