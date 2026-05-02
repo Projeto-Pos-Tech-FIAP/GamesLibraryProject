@@ -1,3 +1,4 @@
+using TechChallengeFase1.Domain.DTOs;
 using TechChallengeFase1.Domain.Entities;
 
 namespace TechChallengeFase1.Domain.Interfaces;
