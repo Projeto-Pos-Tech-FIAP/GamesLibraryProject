@@ -1,3 +1,4 @@
+using TechChallengeFase1.Application.DTOs;
 using TechChallengeFase1.Application.Interfaces;
 using TechChallengeFase1.Domain.DTOs;
 using TechChallengeFase1.Domain.Entities;
@@ -27,20 +28,28 @@ public class LibraryService : ILibraryService
         return await _libraryRepository.GetByUserGuidAsync(userGuid);
     }
 
-    public async Task<LibraryGame> AcquireGameAsync(LibraryGameInputDto dto)
+    public async Task<LibraryGameOutputDto> AcquireGameAsync(LibraryGameInputDto dto)
     {
-        var library = await _libraryRepository.GetByIdAsync(dto.LibraryId)
-            ?? throw new NotFoundException($"Biblioteca {dto.LibraryId} não encontrada.");
+      var library = await _libraryRepository.GetByIdAsync(dto.LibraryId)
+          ?? throw new NotFoundException($"Biblioteca {dto.LibraryId} não encontrada.");
 
-        var game = await _gameRepository.GetByIdAsync(dto.GameId)
-            ?? throw new NotFoundException($"Jogo {dto.GameId} não encontrado.");
+      var game = await _gameRepository.GetByIdAsync(dto.GameId)
+          ?? throw new NotFoundException($"Jogo {dto.GameId} não encontrado.");
 
-        var alreadyOwned = await _libraryGameRepository.ExistsAsync(dto.LibraryId, dto.GameId);
-        if (alreadyOwned)
-            throw new InvalidOperationException($"O jogo '{game.Title}' já está na biblioteca.");
+      var alreadyOwned = await _libraryGameRepository.ExistsAsync(dto.LibraryId, dto.GameId);
+      if (alreadyOwned)
+          throw new InvalidOperationException($"O jogo '{game.Title}' já está na biblioteca.");
 
-        var libraryGame = new LibraryGame(dto.LibraryId, dto.GameId, dto.AcquiredFromOrderId, dto.AcquiredAt);
+      var libraryGame = new LibraryGame(dto.LibraryId, dto.GameId, dto.AcquiredFromOrderId, dto.AcquiredAt);
 
-        return await _libraryGameRepository.AddAsync(libraryGame);
-    }
+      var result = await _libraryGameRepository.AddAsync(libraryGame);
+
+      return new LibraryGameOutputDto
+      {
+        LibraryGameId = result.LibraryGameId,
+        LibraryId = result.LibraryId,
+        GameId = result.GameId,
+        AcquiredAt = result.AcquiredAt
+      };
+  }
 }
