@@ -40,7 +40,7 @@ internal class Program
                 return new ObjectResult(new
                 {
                     CodigoStatus = 400,
-                    Mensagem = "Erro de validação nos campos enviados.",
+                    Mensagem = "Erro de validaï¿½ï¿½o nos campos enviados.",
                     ListaErros = listaErros
                 })
                 {
@@ -48,6 +48,7 @@ internal class Program
                 };
             };
         });
+
         builder.Services
         .AddGraphQLServer()
         .AddQueryType(d => d.Name("Query"))

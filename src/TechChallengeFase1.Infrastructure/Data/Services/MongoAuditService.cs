@@ -30,7 +30,16 @@ public class MongoAuditService : IAuditService
     public MongoAuditService(IOptions<MongoDbSettings> settings)
     {
         var config = settings.Value;
-        var client = new MongoClient(config.ConnectionString);
+        Console.WriteLine($"[MONGO DEBUG] Host={config.Host} Port={config.Port} User={config.Username}");
+        var clientSettings = new MongoClientSettings
+        {
+            Server = new MongoServerAddress(config.Host, config.Port),
+            Credential = new MongoCredential(
+                "SCRAM-SHA-256",
+                new MongoInternalIdentity("admin", config.Username),
+                new PasswordEvidence(config.Password))
+        };
+        var client = new MongoClient(clientSettings);
         var database = client.GetDatabase(config.DatabaseName);
         _collection = database.GetCollection<AuditLog>(config.CollectionName);
     }

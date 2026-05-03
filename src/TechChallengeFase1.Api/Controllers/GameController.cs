@@ -30,6 +30,6 @@ public class GameController : ControllerBase
     {
         var output = await _gameService.CreateAsync(dto);
 
-        return CreatedAtAction(nameof(CreateAsync), new { id = output.GameId }, output);
+        return Created($"api/Game/{output.GameId}", output);
     }
 }

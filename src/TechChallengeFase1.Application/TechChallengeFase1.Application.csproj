@@ -1,12 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\TechChallengeFase1.Domain\TechChallengeFase1.Domain.csproj" />
+    <Compile Remove="Middlewares\**" />
+    <Compile Remove="Options\**" />
+    <EmbeddedResource Remove="Middlewares\**" />
+    <EmbeddedResource Remove="Options\**" />
+    <None Remove="Middlewares\**" />
+    <None Remove="Options\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Middlewares\" />
-    <Folder Include="Options\" />
+    <ProjectReference Include="..\TechChallengeFase1.Domain\TechChallengeFase1.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

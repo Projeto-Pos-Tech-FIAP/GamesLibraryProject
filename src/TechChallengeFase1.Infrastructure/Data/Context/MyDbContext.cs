@@ -49,8 +49,16 @@ public sealed class MyDbContext : DbContext
 
         if (_auditService != null && auditEntries.Count > 0)
         {
-            var logs = auditEntries.Select(e => e.ToAuditLog());
-            await _auditService.SaveAuditLogsAsync(logs, cancellationToken);
+            try
+            {
+                var logs = auditEntries.Select(e => e.ToAuditLog());
+                await _auditService.SaveAuditLogsAsync(logs, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
         }
 
         return result;
