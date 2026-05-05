@@ -216,13 +216,51 @@ query {
 
 ## Testes
 
-Para executar os testes automatizados:
+O projeto possui testes automatizados no projeto `src/TechChallengeFase1.Tests`, usando:
+
+- xUnit como framework de testes.
+- Moq para criacao de mocks das dependencias.
+- EF Core InMemory para validar cenarios de persistencia sem depender do SQL Server.
+- coverlet.collector para coleta de cobertura.
+
+Os testes estao organizados por funcionalidade:
+
+```text
+src/TechChallengeFase1.Tests/
+  Builders/                Builders para montar entidades nos testes
+  Features/
+    Game/                  Testes de criacao de jogos e GameController
+    Library/               Testes de aquisicao de jogos e biblioteca do usuario
+```
+
+### Executar todos os testes
+
+Na raiz do projeto, execute:
 
 ```bash
 dotnet test TechChallengeFase1.slnx
 ```
 
-Os testes usam xUnit, Moq e EF Core InMemory.
+### Executar apenas o projeto de testes
+
+```bash
+dotnet test src/TechChallengeFase1.Tests/TechChallengeFase1.Tests.csproj
+```
+
+### Executar testes com cobertura
+
+```bash
+dotnet test TechChallengeFase1.slnx --collect:"XPlat Code Coverage"
+```
+
+Ao final da execucao, o arquivo de cobertura e gerado dentro da pasta `TestResults`.
+
+### Cenarios cobertos
+
+- Criacao de jogos e validacoes de entrada.
+- Endpoints do `GameController`.
+- Aquisicao de jogos para a biblioteca do usuario.
+- Consulta da biblioteca do usuario.
 
 ## Comandos uteis
 
